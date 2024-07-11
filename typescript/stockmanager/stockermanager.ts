@@ -119,16 +119,11 @@ function showRequiredAlert(content: string): void {
 }
 
 // 매장, 재고 삭제 알림창
-function showRemoveAlert(target: Shop | Stock, targetStr: string): void {
+function showRemoveAlert(target, targetStr: string): void {
     const name = targetStr === 'shop' ? (target as Shop).shname : (target as Stock).stname;
     const text = targetStr === 'shop' ? '매장' : '재고';
-    let returnFunc;
-    if (targetStr === 'shop') {
-        console.log(target);
-        returnFunc = (target: Shop) => removeShop(target);
-    } else {
-        returnFunc = (target: Stock) => removeStock(target);
-    }
+    const returnFunc = targetStr === 'shop' ? removeShop : removeStock;
+    target = targetStr === 'shop' ? Shop : Stock;
 
     Swal.fire({
         title: "정말로 삭제하시겠습니까?",

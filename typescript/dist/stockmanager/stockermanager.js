@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const sweetalert_1 = require("sweetalert");
+const sweetalert2_1 = require("sweetalert2");
 const moment = require("moment");
 const { JSDOM } = require('jsdom');
 const { window } = new JSDOM();
@@ -98,15 +98,15 @@ function printShopList() {
 }
 // 매장 입력, 선택 알림창
 function showRequiredAlert(content) {
-    const Toast = sweetalert_1.default.mixin({
+    const Toast = sweetalert2_1.default.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
         didOpen: (toast) => {
-            toast.onmouseenter = sweetalert_1.default.stopTimer;
-            toast.onmouseleave = sweetalert_1.default.resumeTimer;
+            toast.onmouseenter = sweetalert2_1.default.stopTimer;
+            toast.onmouseleave = sweetalert2_1.default.resumeTimer;
         }
     });
     Toast.fire({
@@ -118,15 +118,9 @@ function showRequiredAlert(content) {
 function showRemoveAlert(target, targetStr) {
     const name = targetStr === 'shop' ? target.shname : target.stname;
     const text = targetStr === 'shop' ? '매장' : '재고';
-    let returnFunc;
-    if (targetStr === 'shop') {
-        console.log(target);
-        returnFunc = (target) => removeShop(target);
-    }
-    else {
-        returnFunc = (target) => removeStock(target);
-    }
-    sweetalert_1.default.fire({
+    const returnFunc = targetStr === 'shop' ? removeShop : removeStock;
+    target = targetStr === 'shop' ? Shop : Stock;
+    sweetalert2_1.default.fire({
         title: "정말로 삭제하시겠습니까?",
         text: `삭제할 ${text} : ${name}`,
         icon: "warning",
@@ -137,7 +131,7 @@ function showRemoveAlert(target, targetStr) {
         cancelButtonText: "취소"
     }).then((result) => {
         if (result.isConfirmed) {
-            sweetalert_1.default.fire({
+            sweetalert2_1.default.fire({
                 title: "삭제되었습니다!",
                 icon: "success"
             });
@@ -147,15 +141,15 @@ function showRemoveAlert(target, targetStr) {
 }
 // 매장, 재고 변경사항 확인 안내창
 function showConfirmAlert(test) {
-    const Toast = sweetalert_1.default.mixin({
+    const Toast = sweetalert2_1.default.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
         didOpen: (toast) => {
-            toast.onmouseenter = sweetalert_1.default.stopTimer;
-            toast.onmouseleave = sweetalert_1.default.resumeTimer;
+            toast.onmouseenter = sweetalert2_1.default.stopTimer;
+            toast.onmouseleave = sweetalert2_1.default.resumeTimer;
         }
     });
     Toast.fire({
@@ -184,7 +178,7 @@ function initInputShop() {
 // 매장 수정 알림창
 function showEditShopAlert(shop) {
     (() => __awaiter(this, void 0, void 0, function* () {
-        const { value: newshname } = yield sweetalert_1.default.fire({
+        const { value: newshname } = yield sweetalert2_1.default.fire({
             title: "매장정보 수정",
             input: "text",
             inputLabel: `현재 매장명: ${shop.shname}`,
@@ -322,7 +316,7 @@ function initInputStock() {
 // 재고 정보 수정 알림창
 function showEditStockAlert(stock) {
     (() => __awaiter(this, void 0, void 0, function* () {
-        const { value: formValues } = yield sweetalert_1.default.fire({
+        const { value: formValues } = yield sweetalert2_1.default.fire({
             title: "재고 정보 수정",
             html: `
                 <input id="editstname" type="text" class="swal2-input" placeholder=${stock.stname}>
@@ -343,7 +337,7 @@ function showEditStockAlert(stock) {
             }
         });
         if (formValues) {
-            sweetalert_1.default.fire(JSON.stringify(formValues));
+            sweetalert2_1.default.fire(JSON.stringify(formValues));
             showConfirmAlert("재고정보가 변경되었습니다.");
             editStock(stock, formValues);
         }
